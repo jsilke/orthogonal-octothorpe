@@ -11,19 +11,14 @@ interface BoardState {
   squares: Array<'X' | 'O' | null>;
 }
 
-class Square extends React.Component<SquareProps> {
-
-  render() {
-    return (
-      <button
-        className="square"
-        onClick={(e) => this.props.onClick(e)}
-      >
-        {this.props.value}
-      </button>
-    );
-  }
+const Square = (props: SquareProps) => {
+  return (
+    <button className="square" onClick={props.onClick}>
+      {props.value}
+    </button>
+  );
 }
+
 
 class Board extends React.Component<any, BoardState> {
   constructor(props: any) {
