@@ -15,9 +15,9 @@ export interface GameState {
 
 export type Squares = Array<Value>
 
-type MoveHistory = {
+export type MoveHistory = {
   squares: Squares,
-  moveCoordinates?: Coordinates, // Optional to allow board props to extend Squares.
+  moveCoordinates?: Coordinates, // Optional to allow board props to extend MoveHistory.
 }
 
 type Position = number | null;

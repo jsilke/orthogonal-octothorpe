@@ -1,8 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import {SquareProps, BoardProps, GameState, Squares} from './types';
+import {SquareProps, BoardProps, GameState, Squares, MoveHistory} from './types';
 
+/**
+ * Renders one of the 9 squares on the board.
+ * @param props - Includes a value (`Value` = 'X' | 'O' | null) and a click handler (`onClick`).
+ * @returns - A button displaying the `Value` of the square.
+ */
 const Square = (props: SquareProps) => {
   return (
     <button className="square" onClick={props.onClick}>
@@ -11,7 +16,15 @@ const Square = (props: SquareProps) => {
   );
 }
 
+/**
+ * Renders the entire board row by row
+ */
 class Board extends React.Component<BoardProps> {
+  /**
+   * Renders a single square component.
+   * @param i - The index of the square to render.
+   * @returns - A `Square` component.
+   */
   renderSquare(i: number) {
     return (
       <Square
@@ -21,6 +34,10 @@ class Board extends React.Component<BoardProps> {
     );
   }
 
+  /**
+   * Renders the entire board.
+   * @returns - A `Board` component.
+   */
   render() {
     return (
       <div>
@@ -44,8 +61,8 @@ class Board extends React.Component<BoardProps> {
   }
 }
 
-class Game extends React.Component<any, GameState> {
-  constructor(props: any) {
+class Game extends React.Component<{}, GameState> {
+  constructor(props: {}) {
     super(props);
     this.state = {
       history: [{
@@ -60,15 +77,60 @@ class Game extends React.Component<any, GameState> {
     };
   }
 
+  /**
+   * Called in response to a click on one of the game board squares. Returns early if the clicked
+   * square is already occupied or if a winner has been declared, otherwise updates the square's
+   * state and the game history.
+   * @param i - The index of the square that was clicked. 
+   */
   handleClick(i: number) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
-    const current = history[history.length - 1];
-    const squares = current.squares.slice();
+    const squares = this.getCurrentBoardLayoutCopy();
 
     if (calculateWinner(squares) || squares[i]) {
       return;
     }
+    this.fillSquareAndUpdateHistory(i);
+  }
+
+  /**
+   * Returns a copy of the game history leading up to the selected move/state.
+   */
+  getHistoryCopy() {
+    return this.state.history.slice(0, this.state.stepNumber + 1);
+  }
+
+  getCurrentState() {
+    const history = this.getHistoryCopy();
+    return history[history.length - 1];
+  }
+
+  getCurrentBoardLayoutCopy() {
+    return this.getCurrentState().squares.slice();
+  }
+
+  fillSquareAndUpdateHistory(i: number) {
+    const history = this.getHistoryCopy();
+    const squares = this.getCurrentBoardLayoutCopy();
+    
     squares[i] = this.state.xIsNext ? 'X' : 'O';
+    
+    this.updateState(history, squares, i);
+  }
+
+  jumpTo(step: number) {
+    this.setState({
+      stepNumber: step,
+      xIsNext: (step % 2) === 0,
+    });
+  }
+
+  /**
+   * Updates the state of the game with the new move.
+   * @param history - An array containing previous game states up until this move.
+   * @param squares - An array containing the current state of the board.
+   * @param i - The index of the square that was filled this move.
+   */
+  updateState(history: MoveHistory[], squares: Squares, i: number) {
     this.setState({
       history: history.concat([{
         squares: squares,
@@ -76,13 +138,6 @@ class Game extends React.Component<any, GameState> {
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
-    });
-  }
-
-  jumpTo(step: number) {
-    this.setState({
-      stepNumber: step,
-      xIsNext: (step % 2) === 0,
     });
   }
 
