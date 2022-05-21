@@ -1,27 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-
-type Value = 'X' | 'O' | null;
-
-type Squares = {
-  squares: Array<Value>,
-}
-
-interface SquareProps {
-  value: Value;
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
-}
-
-interface BoardProps extends Squares {
-  onClick: any; // The current architecture causes an error if this type is made more specific.
-}
-
-interface GameState {
-  history: Array<Squares>;
-  xIsNext: boolean;
-  stepNumber: number;
-}
+import {SquareProps, BoardProps, GameState, Squares} from './types';
 
 const Square = (props: SquareProps) => {
   return (
@@ -70,6 +50,10 @@ class Game extends React.Component<any, GameState> {
     this.state = {
       history: [{
         squares: Array(9).fill(null),
+        moveCoordinates: {
+          row: null,
+          column: null,
+        },
       }],
       stepNumber: 0,
       xIsNext: true,
@@ -88,6 +72,7 @@ class Game extends React.Component<any, GameState> {
     this.setState({
       history: history.concat([{
         squares: squares,
+        moveCoordinates: computeCoordinates(i),
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
@@ -110,9 +95,11 @@ class Game extends React.Component<any, GameState> {
       const desc = move ?
         `Go to move # ${move}` :
         'Go to game start.';
+      const coordinates = step.moveCoordinates;
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <span>{` Occupied position: (${coordinates?.row}, ${coordinates?.column})`}</span>
         </li>
       );
     });
@@ -141,7 +128,14 @@ class Game extends React.Component<any, GameState> {
   }
 }
 
-const calculateWinner = (squares: Array<'X' | 'O' | null>) => {
+const computeCoordinates = (squareClicked: number) => {
+  return {
+    row: Math.floor(squareClicked / 3),
+    column: squareClicked % 3,
+  }
+}
+
+const calculateWinner = (squares: Squares) => {
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -160,8 +154,6 @@ const calculateWinner = (squares: Array<'X' | 'O' | null>) => {
   }
   return null;
 };
-
-// TODO - Add logic for drawing.
 
 // ========================================
 
