@@ -180,10 +180,18 @@ class Game extends React.Component<GameProps, GameState> {
         `Go to move # ${move}` :
         'Go to game start.';
       const coordinates = step.moveCoordinates;
+      // If one is true, then both should be true, but just in case...
+      if (coordinates.row !== null && coordinates.column !== null) {
+        return (
+          <li key={move}>
+            <button onClick={() => this.jumpTo(move)}>{desc}</button>
+            <span>{` Occupied position: (${coordinates.row}, ${coordinates.column})`}</span>
+          </li>
+        );
+      }
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
-          <span>{` Occupied position: (${coordinates?.row}, ${coordinates?.column})`}</span>
         </li>
       );
     });
