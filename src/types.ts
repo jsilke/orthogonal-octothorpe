@@ -5,12 +5,12 @@ export interface SquareProps {
 
 export interface BoardProps {
   onClick: (i: number) => void;
-  boardSize: BoardSize;
+  boardSize: number;
   squares: Squares;
 }
 
 export interface GameProps {
-  boardSize: BoardSize;
+  boardSize: number;
 }
 
 export interface GameState {
@@ -25,11 +25,6 @@ export type MoveHistory = {
   squares: Squares,
   moveCoordinates: Coordinates,
 }
-
-type BoardSize = {
-  rowLength: number,
-  columnLength: number,
-};
 
 type Position = number | null;
 

@@ -38,7 +38,7 @@ class Board extends React.Component<BoardProps> {
    * Calculates the size of the array of squares needed to represent the board.
    */
   calculateBoardSize() {
-    return this.props.boardSize.rowLength * this.props.boardSize.columnLength;
+    return Math.pow(this.props.boardSize, 2);
   }
 
   /**
@@ -243,4 +243,4 @@ const calculateWinner = (squares: Squares) => {
 // ========================================
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
-root.render(<Game boardSize={{rowLength: 3, columnLength: 3}}/>);
+root.render(<Game boardSize={3} />); // Renders a 3x3 board.
