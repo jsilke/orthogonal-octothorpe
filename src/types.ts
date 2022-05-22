@@ -10,6 +10,7 @@ export interface BoardProps {
 }
 
 export interface GameProps {
+  // The number of rows and columns; boardSize is squared to get the board area.
   boardSize: number;
 }
 

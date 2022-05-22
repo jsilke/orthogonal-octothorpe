@@ -35,13 +35,6 @@ class Board extends React.Component<BoardProps> {
   }
 
   /**
-   * Calculates the size of the array of squares needed to represent the board.
-   */
-  calculateBoardSize() {
-    return Math.pow(this.props.boardSize, 2);
-  }
-
-  /**
    * Renders the entire board.
    */
   render() {
@@ -76,12 +69,19 @@ class Game extends React.Component<GameProps, GameState> {
     super(props);
     this.state = {
       history: [{
-        squares: Array(9).fill(null),
+        squares: Array(this.calculateBoardArea()).fill(null),
         moveCoordinates: {row: null, column: null},
       }],
       stepNumber: 0,
       xIsNext: true,
     };
+  }
+
+  /**
+   * Calculates the size of the array of squares needed to represent the board.
+   */
+  calculateBoardArea() {
+    return Math.pow(this.props.boardSize, 2);
   }
 
   /**
@@ -136,6 +136,18 @@ class Game extends React.Component<GameProps, GameState> {
       xIsNext: (step % 2) === 0,
     });
   }
+  
+  /**
+   * Calculates the coordinates of the square that was clicked indexed from 0. 
+   * @param squareClicked - The index of the square that was clicked.
+   * @returns - The coordinates of the square that was clicked in the format (row, column).
+   */
+  computeCoordinates(squareClicked: number) {
+    return {
+      row: Math.floor(squareClicked / this.props.boardSize),
+      column: squareClicked % this.props.boardSize,
+    }
+  }
 
   /**
    * Updates the state of the game with the new move.
@@ -147,7 +159,7 @@ class Game extends React.Component<GameProps, GameState> {
     this.setState({
       history: history.concat([{
         squares: squares,
-        moveCoordinates: computeCoordinates(i),
+        moveCoordinates: this.computeCoordinates(i),
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
@@ -198,18 +210,6 @@ class Game extends React.Component<GameProps, GameState> {
         </div>
       </div>
     );
-  }
-}
-
-/**
- * Calculates the coordinates of the square that was clicked indexed from 0. 
- * @param squareClicked - The index of the square that was clicked.
- * @returns - The coordinates of the square that was clicked in the format (row, column).
- */
-const computeCoordinates = (squareClicked: number) => {
-  return {
-    row: Math.floor(squareClicked / 3),
-    column: squareClicked % 3,
   }
 }
 
