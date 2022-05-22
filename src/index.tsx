@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import {SquareProps, BoardProps, GameState, Squares, MoveHistory} from './types';
+import {GameProps, SquareProps, BoardProps, GameState, Squares, MoveHistory} from './types';
 
 /**
  * Renders one of the 9 squares on the board.
@@ -35,10 +35,20 @@ class Board extends React.Component<BoardProps> {
   }
 
   /**
+   * Calculates the size of the array of squares needed to represent the board.
+   */
+  calculateBoardSize() {
+    return this.props.boardSize.rowLength * this.props.boardSize.columnLength;
+  }
+
+  /**
    * Renders the entire board.
-   * @returns - A `Board` component.
    */
   render() {
+    /* TODO: Refactor board production into a modular process based on board size. Rows should be
+     * components based on this layout where `rowLength` rows are generated containing `columnLength`
+     * squares.
+     */
     return (
       <div>
         <div className="board-row">
@@ -61,16 +71,13 @@ class Board extends React.Component<BoardProps> {
   }
 }
 
-class Game extends React.Component<{}, GameState> {
-  constructor(props: {}) {
+class Game extends React.Component<GameProps, GameState> {
+  constructor(props: GameProps) {
     super(props);
     this.state = {
       history: [{
         squares: Array(9).fill(null),
-        moveCoordinates: {
-          row: null,
-          column: null,
-        },
+        moveCoordinates: {row: null, column: null},
       }],
       stepNumber: 0,
       xIsNext: true,
@@ -99,11 +106,17 @@ class Game extends React.Component<{}, GameState> {
     return this.state.history.slice(0, this.state.stepNumber + 1);
   }
 
+  /**
+   * Returns the state of the game for the selected move number.
+   */
   getCurrentState() {
     const history = this.getHistoryCopy();
     return history[history.length - 1];
   }
 
+  /**
+   * Returns a copy of the current board layout from the selected game state.
+   */
   getCurrentBoardLayoutCopy() {
     return this.getCurrentState().squares.slice();
   }
@@ -140,7 +153,11 @@ class Game extends React.Component<{}, GameState> {
       xIsNext: !this.state.xIsNext,
     });
   }
-
+ 
+  /**
+   * TODO: This method does way too much. It must be broken up into smaller methods.
+   * @returns - A `Board` component.
+   */
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
@@ -169,8 +186,9 @@ class Game extends React.Component<{}, GameState> {
     return (
       <div className="game">
         <div className="game-board">
-          <Board 
+          <Board
             squares={current.squares}
+            boardSize={this.props.boardSize}
             onClick={(i: number) => this.handleClick(i)}
           />
         </div>
@@ -183,6 +201,11 @@ class Game extends React.Component<{}, GameState> {
   }
 }
 
+/**
+ * Calculates the coordinates of the square that was clicked indexed from 0. 
+ * @param squareClicked - The index of the square that was clicked.
+ * @returns - The coordinates of the square that was clicked in the format (row, column).
+ */
 const computeCoordinates = (squareClicked: number) => {
   return {
     row: Math.floor(squareClicked / 3),
@@ -190,7 +213,14 @@ const computeCoordinates = (squareClicked: number) => {
   }
 }
 
+/**
+ * Determines whether the game should end in victory.
+ * @param squares - An array containing the current state of the board's values.
+ * @returns - The winner of the game, if one exists, otherwise null.
+ */
 const calculateWinner = (squares: Squares) => {
+  // TODO: Algorithmically generalize this win strategy instead of hard-coding it to accommodate
+  // arbitrary board sizes.
   const lines = [
     [0, 1, 2],
     [3, 4, 5],
@@ -213,4 +243,4 @@ const calculateWinner = (squares: Squares) => {
 // ========================================
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
-root.render(<Game />);
+root.render(<Game boardSize={{rowLength: 3, columnLength: 3}}/>);

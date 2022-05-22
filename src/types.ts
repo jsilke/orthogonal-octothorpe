@@ -1,10 +1,16 @@
 export interface SquareProps {
   value: Value;
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
+  onClick: () => void; 
 }
 
-export interface BoardProps extends MoveHistory {
-  onClick: any; // The current architecture causes an error if this type is made more specific.
+export interface BoardProps {
+  onClick: (i: number) => void;
+  boardSize: BoardSize;
+  squares: Squares;
+}
+
+export interface GameProps {
+  boardSize: BoardSize;
 }
 
 export interface GameState {
@@ -17,8 +23,13 @@ export type Squares = Array<Value>
 
 export type MoveHistory = {
   squares: Squares,
-  moveCoordinates?: Coordinates, // Optional to allow board props to extend MoveHistory.
+  moveCoordinates: Coordinates,
 }
+
+type BoardSize = {
+  rowLength: number,
+  columnLength: number,
+};
 
 type Position = number | null;
 
