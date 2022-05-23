@@ -135,22 +135,13 @@ class Game extends React.Component<GameProps, GameState> {
    * indicate the current state to the user. 
    * @param step - The move number to which the game state will be reverted.
    */
-  jumpTo(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, step: number) {
+  jumpToStateInMoveHistory(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, step: number) {
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0,
     });
-  
-    let formerActiveButton = document.querySelector('.button--active');
-    let clickedButton = e.currentTarget;
-    if (formerActiveButton) {
-      formerActiveButton.classList.remove('button--active');
-      clickedButton.classList.add('button--active');
-    } else {
-      throw new Error('No active button found!');
-    }
   }
-  
+
   /**
    * Calculates the coordinates of the square that was clicked indexed from 0. 
    * @param squareClicked - The index of the square that was clicked.
@@ -190,7 +181,7 @@ class Game extends React.Component<GameProps, GameState> {
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
-      const desc = move ?
+      const description = move ?
         `Go to move # ${move}` :
         'Go to game start.';
       const coordinates = step.moveCoordinates;
@@ -198,14 +189,14 @@ class Game extends React.Component<GameProps, GameState> {
       if (coordinates.row !== null && coordinates.column !== null) {
         return (
           <li key={move}>
-            <button className="button" onClick={(e) => this.jumpTo(e, move)}>{desc}</button>
+            <button className={`button${move === this.state.stepNumber ? ' button--active' : ''}`} onClick={(e) => this.jumpToStateInMoveHistory(e, move)}>{description}</button>
             <span>{` ${move % 2 === 0 ? 'O' : 'X'} occupied position: (${coordinates.row}, ${coordinates.column})`}</span>
           </li>
         );
       }
       return (
         <li key={move}>
-          <button className="button button--active" onClick={(e) => this.jumpTo(e, move)}>{desc}</button>
+          <button className={`button${move === this.state.stepNumber ? ' button--active' : ''}`} onClick={(e) => this.jumpToStateInMoveHistory(e, move)}>{description}</button>
         </li>
       );
     });
