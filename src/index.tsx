@@ -186,17 +186,21 @@ class Game extends React.Component<GameProps, GameState> {
         'Go to game start.';
       const coordinates = step.moveCoordinates;
       // If one is true, then both should be true, but just in case...
-      if (coordinates.row !== null && coordinates.column !== null) {
-        return (
-          <li key={move}>
-            <button className={`button${move === this.state.stepNumber ? ' button--active' : ''}`} onClick={(e) => this.jumpToStateInMoveHistory(e, move)}>{description}</button>
-            <span>{` ${move % 2 === 0 ? 'O' : 'X'} occupied position: (${coordinates.row}, ${coordinates.column})`}</span>
-          </li>
-        );
-      }
       return (
         <li key={move}>
-          <button className={`button${move === this.state.stepNumber ? ' button--active' : ''}`} onClick={(e) => this.jumpToStateInMoveHistory(e, move)}>{description}</button>
+          <button
+            className={`button${move === this.state.stepNumber ? ' button--active' : ''}`}
+            onClick={(e) => this.jumpToStateInMoveHistory(e, move)}
+          >
+            {description}
+          </button>
+          <span>
+            {
+              coordinates.row !== null && coordinates.column !== null ?
+              ` ${move % 2 === 0 ? 'O' : 'X'} occupied position (${coordinates.row}, ${coordinates.column})` :
+              ''
+            }
+          </span>
         </li>
       );
     });
