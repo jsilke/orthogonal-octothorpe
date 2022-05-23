@@ -47,42 +47,38 @@ button {
 
 .square {
     background-color: #16062e;
-    border: 1px solid #fcf403;
+    border: 2px solid #fcf403;
     float: left;
     color: #fcf403;
-    font-size: 24px;
+    font-size: 30px;
     font-weight: bold;
     line-height: 34px;
-    height: 34px;
+    height: 50px;
     margin-right: -1px;
     margin-top: -1px;
     padding: 0;
     text-align: center;
-    width: 34px;
+    width: 50px;
 }
 
 .square:focus {
     outline: none;
 }
 
-.square.board__left-edge {
+.square .board__left-edge {
     border-left: none;
 }
 
-.square.board__top-edge {
+.square .board__top-edge {
     border-top: none;
 }
 
-.square.board__bottom-edge {
+.square .board__bottom-edge {
     border-bottom: none;
 }
 
-.square.board__right-edge {
+.square .board__right-edge {
     border-right: none;
-}
-
-.kbd-navigation .square:focus {
-    background: #ddd;
 }
 
 .game {
