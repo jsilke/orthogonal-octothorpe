@@ -10,6 +10,10 @@ ul {
     padding-left: 30px;
 }
 
+button {
+    border: none;
+}
+
 .button {
     background: none;
     color: #66e6ff;
@@ -59,6 +63,22 @@ ul {
 
 .square:focus {
     outline: none;
+}
+
+.square.board__left-edge {
+    border-left: none;
+}
+
+.square.board__top-edge {
+    border-top: none;
+}
+
+.square.board__bottom-edge {
+    border-bottom: none;
+}
+
+.square.board__right-edge {
+    border-right: none;
 }
 
 .kbd-navigation .square:focus {

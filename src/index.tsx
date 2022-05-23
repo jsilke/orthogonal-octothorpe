@@ -64,6 +64,9 @@ class Board extends React.Component<BoardProps> {
   }
 }
 
+/**
+ * Renders the game's current state.
+ */
 class Game extends React.Component<GameProps, GameState> {
   constructor(props: GameProps) {
     super(props);
@@ -121,6 +124,10 @@ class Game extends React.Component<GameProps, GameState> {
     return this.getCurrentState().squares.slice();
   }
 
+  /**
+   * Fills the clicked square with the appropriate value and updates the game history.
+   * @param i - The index of the square that was filled this move.
+   */
   fillSquareAndUpdateHistory(i: number) {
     const history = this.getHistoryCopy();
     const squares = this.getCurrentBoardLayoutCopy();
@@ -185,7 +192,6 @@ class Game extends React.Component<GameProps, GameState> {
         `Go to move # ${move}` :
         'Go to game start.';
       const coordinates = step.moveCoordinates;
-      // If one is true, then both should be true, but just in case...
       return (
         <li key={move}>
           <button
