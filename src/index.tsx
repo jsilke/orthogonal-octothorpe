@@ -130,11 +130,25 @@ class Game extends React.Component<GameProps, GameState> {
     this.updateState(history, squares, i);
   }
 
-  jumpTo(step: number) {
+  /**
+   * Reverts the state of the game to the selected move and appropriately styles the button to
+   * indicate the current state to the user. 
+   * @param step - The move number to which the game state will be reverted.
+   */
+  jumpTo(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, step: number) {
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0,
     });
+  
+    let formerActiveButton = document.querySelector('.button--active');
+    let clickedButton = e.currentTarget;
+    if (formerActiveButton) {
+      formerActiveButton.classList.remove('button--active');
+      clickedButton.classList.add('button--active');
+    } else {
+      throw new Error('No active button found!');
+    }
   }
   
   /**
@@ -184,14 +198,14 @@ class Game extends React.Component<GameProps, GameState> {
       if (coordinates.row !== null && coordinates.column !== null) {
         return (
           <li key={move}>
-            <button onClick={() => this.jumpTo(move)}>{desc}</button>
-            <span>{` Occupied position: (${coordinates.row}, ${coordinates.column})`}</span>
+            <button className="button" onClick={(e) => this.jumpTo(e, move)}>{desc}</button>
+            <span>{` ${move % 2 === 0 ? 'O' : 'X'} occupied position: (${coordinates.row}, ${coordinates.column})`}</span>
           </li>
         );
       }
       return (
         <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <button className="button button--active" onClick={(e) => this.jumpTo(e, move)}>{desc}</button>
         </li>
       );
     });

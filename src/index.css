@@ -1,4 +1,6 @@
 body {
+    background-color: #16062e;
+    color: #f502c0;
     font: 14px "Century Gothic", Futura, sans-serif;
     margin: 20px;
 }
@@ -6,6 +8,27 @@ body {
 ol,
 ul {
     padding-left: 30px;
+}
+
+.button {
+    background: none;
+    color: #66e6ff;
+    border: 2px solid;
+}
+
+.button:hover {
+    border-color: #fcf403;
+    color: white;
+}
+
+.button--active {
+    border-color: #00fa1d;
+    color: white;
+}
+
+.button--active:hover {
+    border-color: #00fa1d;
+    color: white;
 }
 
 .board-row:after {
@@ -19,9 +42,10 @@ ul {
 }
 
 .square {
-    background: #fff;
-    border: 1px solid #999;
+    background-color: #16062e;
+    border: 1px solid #fcf403;
     float: left;
+    color: #fcf403;
     font-size: 24px;
     font-weight: bold;
     line-height: 34px;
