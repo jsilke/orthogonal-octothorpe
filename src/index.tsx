@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import {GameProps, SquareProps, BoardProps, GameState, Squares, MoveHistory} from './types';
+import { GameProps, SquareProps, BoardProps, GameState, Squares, MoveHistory } from './types';
 
 /**
  * Renders one of the 9 squares on the board.
@@ -44,17 +44,17 @@ class Board extends React.Component<BoardProps> {
      */
     return (
       <div>
-        <div className="board-row">
+        <div>
           {this.renderSquare(0)}
           {this.renderSquare(1)}
           {this.renderSquare(2)}
         </div>
-        <div className="board-row">
+        <div>
           {this.renderSquare(3)}
           {this.renderSquare(4)}
           {this.renderSquare(5)}
         </div>
-        <div className="board-row">
+        <div>
           {this.renderSquare(6)}
           {this.renderSquare(7)}
           {this.renderSquare(8)}
@@ -73,7 +73,7 @@ class Game extends React.Component<GameProps, GameState> {
     this.state = {
       history: [{
         squares: Array(this.calculateBoardArea()).fill(null),
-        moveCoordinates: {row: null, column: null},
+        moveCoordinates: { row: null, column: null },
       }],
       stepNumber: 0,
       xIsNext: true,
@@ -131,9 +131,9 @@ class Game extends React.Component<GameProps, GameState> {
   fillSquareAndUpdateHistory(i: number) {
     const history = this.getHistoryCopy();
     const squares = this.getCurrentBoardLayoutCopy();
-    
+
     squares[i] = this.state.xIsNext ? 'X' : 'O';
-    
+
     this.updateState(history, squares, i);
   }
 
@@ -177,7 +177,7 @@ class Game extends React.Component<GameProps, GameState> {
       xIsNext: !this.state.xIsNext,
     });
   }
- 
+
   /**
    * TODO: This method does way too much. It must be broken up into smaller methods.
    * @returns - A `Board` component.
@@ -203,8 +203,8 @@ class Game extends React.Component<GameProps, GameState> {
           <span>
             {
               coordinates.row !== null && coordinates.column !== null ?
-              ` ${move % 2 === 0 ? 'O' : 'X'} occupied position (${coordinates.row}, ${coordinates.column})` :
-              ''
+                ` ${move % 2 === 0 ? 'O' : 'X'} occupied position (${coordinates.row}, ${coordinates.column})` :
+                ''
             }
           </span>
         </li>

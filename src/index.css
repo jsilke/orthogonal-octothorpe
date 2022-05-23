@@ -35,12 +35,6 @@ button {
     color: white;
 }
 
-.board-row:after {
-    clear: both;
-    content: "";
-    display: table;
-}
-
 .status {
     margin-bottom: 10px;
 }
