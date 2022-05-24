@@ -181,16 +181,22 @@ class Game extends React.Component<GameProps, GameState> {
     });
   }
 
-  /**
-   * TODO: This method does way too much. It must be broken up into smaller methods.
-   * @returns - A `Board` component.
-   */
-  render() {
-    const history = this.state.history;
-    const current = history[this.state.stepNumber];
+  reportGameStatus() {
+    const current = this.getCurrentState();
     const winner = calculateWinner(current.squares);
 
-    const moves = history.map((step, move) => {
+    let status;
+    if (winner) {
+      status = `Winner: ${winner}`;
+    } else {
+      status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
+    }
+
+    return status;
+  }
+
+  renderDescription() {
+    const moves = this.state.history.map((step, move) => {
       const description = move ?
         `Go to move # ${move}` :
         'Go to game start.';
@@ -211,15 +217,19 @@ class Game extends React.Component<GameProps, GameState> {
             }
           </span>
         </li>
-      );
+      )
     });
 
-    let status;
-    if (winner) {
-      status = `Winner: ${winner}`;
-    } else {
-      status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
-    }
+    return moves;
+  }
+
+  /**
+   * 
+   * @returns - A `Board` component.
+   */
+  render() {
+    const current = this.state.history[this.state.stepNumber];
+    const moves = this.renderDescription();
 
     return (
       <div className="game">
@@ -231,7 +241,7 @@ class Game extends React.Component<GameProps, GameState> {
           />
         </div>
         <div className="game-info">
-          <div>{status}</div>
+          <div>{this.reportGameStatus()}</div>
           <ol>{moves}</ol>
         </div>
       </div>
