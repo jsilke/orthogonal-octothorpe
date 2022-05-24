@@ -35,30 +35,33 @@ class Board extends React.Component<BoardProps> {
   }
 
   /**
+   * Generates an array of indices for the row using an offset calculated from the `boardSize`
+   * and maps the indices to rendered `Square` components.
+   * @param offset - The board array index of the first square in the row.
+   * @returns - A `Row` componenet (a div of of `Square` components).
+   */
+  renderRow(offset: number) {
+    const squareIndices = [...Array(this.props.boardSize).keys()].map(i => i + offset);
+    const row = squareIndices.map(i => this.renderSquare(i));
+    return (
+      <div>
+        {row}
+      </div>
+    );
+  }
+
+  /**
    * Renders the entire board.
    */
   render() {
-    /* TODO: Refactor board production into a modular process based on board size. Rows should be
-     * components based on this layout where `rowLength` rows are generated containing `columnLength`
-     * squares.
-     */
+    const board = [];
+    for (let i = 0; i < this.props.boardSize; i++) {
+      board.push(this.renderRow(i * this.props.boardSize));
+    }
+
     return (
       <div>
-        <div>
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div>
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div>
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
+        {board}
       </div>
     );
   }
