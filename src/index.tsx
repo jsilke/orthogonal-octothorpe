@@ -188,6 +188,8 @@ class Game extends React.Component<GameProps, GameState> {
     let status;
     if (winner) {
       status = `Winner: ${winner}`;
+    } else if (this.state.stepNumber === this.calculateBoardArea()) {
+      status = 'Draw';
     } else {
       status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
     }
@@ -279,4 +281,4 @@ const calculateWinner = (squares: Squares) => {
 // ========================================
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
-root.render(<Game boardSize={3} />); // Renders a 3x3 board.
+root.render(<Game boardSize={3} />); // Renders an nxn board.
