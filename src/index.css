@@ -59,19 +59,19 @@ button {
     outline: none;
 }
 
-.square .board__left-edge {
+.square.board__left-edge {
     border-left: none;
 }
 
-.square .board__top-edge {
+.square.board__top-edge {
     border-top: none;
 }
 
-.square .board__bottom-edge {
+.square.board__bottom-edge {
     border-bottom: none;
 }
 
-.square .board__right-edge {
+.square.board__right-edge {
     border-right: none;
 }
 

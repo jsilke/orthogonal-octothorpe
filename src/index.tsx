@@ -10,7 +10,7 @@ import { GameProps, SquareProps, BoardProps, GameState, Squares, MoveHistory } f
  */
 const Square = (props: SquareProps) => {
   return (
-    <button className="square" onClick={props.onClick}>
+    <button className={`square${props.style}`} onClick={props.onClick}>
       {props.value}
     </button>
   );
@@ -26,9 +26,28 @@ class Board extends React.Component<BoardProps> {
    * @returns - A `Square` component.
    */
   renderSquare(i: number) {
+    const assignClass = (i: number) => {
+      let squareClass = '';
+      if (this.props.coordinates[i].row === 0) {
+        squareClass += ' board__top-edge';
+      }
+      if (this.props.coordinates[i].row === this.props.boardSize - 1) {
+        squareClass += ' board__bottom-edge';
+      }
+      if (this.props.coordinates[i].column === 0) {
+        squareClass += ' board__left-edge';
+      }
+      if (this.props.coordinates[i].column === this.props.boardSize - 1) {
+        squareClass += ' board__right-edge';
+      }
+      return squareClass;
+    };
+
     return (
       <Square
+        key={i}
         value={this.props.squares[i]}
+        style={assignClass(i)}
         onClick={() => this.props.onClick(i)}
       />
     );
@@ -44,7 +63,7 @@ class Board extends React.Component<BoardProps> {
     const squareIndices = [...Array(this.props.boardSize).keys()].map(i => i + offset);
     const row = squareIndices.map(i => this.renderSquare(i));
     return (
-      <div>
+      <div key={offset / 3}>
         {row}
       </div>
     );
@@ -76,7 +95,7 @@ class Game extends React.Component<GameProps, GameState> {
     this.state = {
       history: [{
         squares: Array(this.calculateBoardArea()).fill(null),
-        moveCoordinates: { row: null, column: null },
+        movePosition: { row: null, column: null },
       }],
       stepNumber: 0,
       xIsNext: true,
@@ -145,7 +164,7 @@ class Game extends React.Component<GameProps, GameState> {
    * indicate the current state to the user. 
    * @param step - The move number to which the game state will be reverted.
    */
-  jumpToStateInMoveHistory(e: React.MouseEvent<HTMLButtonElement, MouseEvent>, step: number) {
+  jumpToStateInMoveHistory(step: number) {
     this.setState({
       stepNumber: step,
       xIsNext: (step % 2) === 0,
@@ -174,7 +193,7 @@ class Game extends React.Component<GameProps, GameState> {
     this.setState({
       history: history.concat([{
         squares: squares,
-        moveCoordinates: this.computeCoordinates(i),
+        movePosition: this.computeCoordinates(i),
       }]),
       stepNumber: history.length,
       xIsNext: !this.state.xIsNext,
@@ -202,12 +221,12 @@ class Game extends React.Component<GameProps, GameState> {
       const description = move ?
         `Go to move # ${move}` :
         'Go to game start.';
-      const coordinates = step.moveCoordinates;
+      const coordinates = step.movePosition;
       return (
         <li key={move}>
           <button
             className={`button${move === this.state.stepNumber ? ' button--active' : ''}`}
-            onClick={(e) => this.jumpToStateInMoveHistory(e, move)}
+            onClick={() => this.jumpToStateInMoveHistory(move)}
           >
             {description}
           </button>
@@ -239,6 +258,7 @@ class Game extends React.Component<GameProps, GameState> {
           <Board
             squares={current.squares}
             boardSize={this.props.boardSize}
+            coordinates={[...Array(this.calculateBoardArea()).keys()].map((square, i) => this.computeCoordinates(i))}
             onClick={(i: number) => this.handleClick(i)}
           />
         </div>

@@ -1,5 +1,6 @@
 export interface SquareProps {
   value: Value;
+  style: string;
   onClick: () => void; 
 }
 
@@ -7,6 +8,7 @@ export interface BoardProps {
   onClick: (i: number) => void;
   boardSize: number;
   squares: Squares;
+  coordinates: Position[];
 }
 
 export interface GameProps {
@@ -24,14 +26,14 @@ export type Squares = Array<Value>
 
 export type MoveHistory = {
   squares: Squares,
-  moveCoordinates: Coordinates,
+  movePosition: Position,
 }
 
-type Position = number | null;
+type Coordinate = number | null;
 
-type Coordinates = {
-  row: Position,
-  column: Position,
+type Position = {
+  row: Coordinate,
+  column: Coordinate,
 }
 
 type Value = 'X' | 'O' | null;
