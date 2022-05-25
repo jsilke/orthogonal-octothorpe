@@ -5,8 +5,12 @@ import { GameProps, SquareProps, BoardProps, GameState, Squares, MoveHistory } f
 
 /**
  * Renders one of the 9 squares on the board.
- * @param props - Includes a value (`Value` = 'X' | 'O' | null) and a click handler (`onClick`).
- * @returns - A button displaying the `Value` of the square.
+ * @param props - {
+ *   value: The value of the square (X, O, or null).
+ *   style: A string containing the CSS class(es) to be added to the square.
+ *   onClick: The function to call when the square is clicked.
+ * }
+ * @returns - A styled button that displays its value.
  */
 const Square = (props: SquareProps) => {
   return (
@@ -17,11 +21,11 @@ const Square = (props: SquareProps) => {
 }
 
 /**
- * Renders the entire board row by row
+ * Renders the entire board row by row.
  */
 class Board extends React.Component<BoardProps> {
   /**
-   * Renders a single square component.
+   * Renders a single `Square` component.
    * @param i - The index of the square to render.
    * @returns - A `Square` component.
    */
@@ -70,7 +74,7 @@ class Board extends React.Component<BoardProps> {
   }
 
   /**
-   * Renders the entire board.
+   * Renders the entire board row by row.
    */
   render() {
     const board = [];
@@ -87,7 +91,7 @@ class Board extends React.Component<BoardProps> {
 }
 
 /**
- * Renders the game's current state.
+ * Manages the game's state.
  */
 class Game extends React.Component<GameProps, GameState> {
   constructor(props: GameProps) {
@@ -173,13 +177,13 @@ class Game extends React.Component<GameProps, GameState> {
 
   /**
    * Calculates the coordinates of the square that was clicked indexed from 0. 
-   * @param squareClicked - The index of the square that was clicked.
+   * @param squareIndex - The index of the square that coordinates should be calculated for.
    * @returns - The coordinates of the square that was clicked in the format (row, column).
    */
-  computeCoordinates(squareClicked: number) {
+  computeCoordinates(squareIndex: number) {
     return {
-      row: Math.floor(squareClicked / this.props.boardSize),
-      column: squareClicked % this.props.boardSize,
+      row: Math.floor(squareIndex / this.props.boardSize),
+      column: squareIndex % this.props.boardSize,
     }
   }
 
@@ -200,6 +204,10 @@ class Game extends React.Component<GameProps, GameState> {
     });
   }
 
+  /**
+   * Reports whose turn it is or the outcome of the game.
+   * @returns - A summary of the present game state as text.
+   */
   reportGameStatus() {
     const current = this.getCurrentState();
     const winner = calculateWinner(current.squares);
@@ -216,6 +224,11 @@ class Game extends React.Component<GameProps, GameState> {
     return status;
   }
 
+  /**
+   * Renders a summary of a turn outcomes and navigation buttons to travel between game states.
+   * @returns - A list of items including a button to navigate through the game history and a 
+   * description of what happened that turn.
+   */
   renderDescription() {
     const moves = this.state.history.map((step, move) => {
       const description = move ?
@@ -245,7 +258,7 @@ class Game extends React.Component<GameProps, GameState> {
   }
 
   /**
-   * 
+   * Renders the game board based on the selected game state.
    * @returns - A `Board` component.
    */
   render() {
@@ -272,7 +285,7 @@ class Game extends React.Component<GameProps, GameState> {
 }
 
 /**
- * Determines whether the game should end in victory.
+ * Determines whether the game should end in victory for either player.
  * @param squares - An array containing the current state of the board's values.
  * @returns - The winner of the game, if one exists, otherwise null.
  */
