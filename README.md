@@ -1,4 +1,4 @@
-# Tic-Tac-Toe
+# ![Tic-tac-toe icon](./public/favicon.ico "Tic-Tac-Toe") Orthogonal Octothorpe
 
 This project was adapted from the
 [_Intro to React_ tutorial](https://reactjs.org/tutorial/tutorial.html) and
