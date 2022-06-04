@@ -58,19 +58,12 @@ class Game extends React.Component<GameProps, GameState> {
   }
 
   /**
-   * Returns a copy of the current board layout from the selected game state.
-   */
-  getCurrentBoardLayoutCopy() {
-    return this.getCurrentState().squares.slice();
-  }
-
-  /**
    * Fills the clicked square with the appropriate value and updates the game history.
    * @param i - The index of the square that was filled this move.
    */
   fillSquareAndUpdateHistory(i: number) {
     const history = this.getHistoryCopy();
-    const squares = this.getCurrentBoardLayoutCopy();
+    const squares = this.getCurrentState().squares.slice();
 
     squares[i] = this.state.xIsNext ? 'X' : 'O';
 
