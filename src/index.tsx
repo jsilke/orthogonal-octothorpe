@@ -36,7 +36,7 @@ class Game extends React.Component<GameProps, GameState> {
   handleClick(i: number) {
     const current = this.getCurrentState();
 
-    if (this.calculateWinner(current) || current.squares[i]) {
+    if (this.calculateWinner() || current.squares[i]) {
       return;
     }
     this.fillSquareAndUpdateHistory(i);
@@ -123,8 +123,7 @@ class Game extends React.Component<GameProps, GameState> {
    * @returns - A summary of the present game state as text.
    */
   reportGameStatus() {
-    const current = this.getCurrentState();
-    const winner = this.calculateWinner(current);
+    const winner = this.calculateWinner();
 
     let status;
     if (winner) {
@@ -202,8 +201,10 @@ class Game extends React.Component<GameProps, GameState> {
    * @param squares - An array containing the current state of the board's values.
    * @returns - The winner of the game, if one exists, otherwise null.
    */
-  calculateWinner(currentState: MoveHistory) {
+  calculateWinner() {
     //const numToWin = (this.props.boardSize < 5) ? 3 : 4;
+    const currentState = this.getCurrentState();
+
     const lines = [
       [0, 1, 2],
       [3, 4, 5],
