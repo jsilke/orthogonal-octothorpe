@@ -111,20 +111,31 @@ class Game extends React.Component<GameProps, GameState> {
     });
   }
 
+  gameCouldBeWon() {
+    const numMovesSoFar = this.state.history.length;
+    // 5 and 7 are the fewest possible moves that a player can have 3 or 4 in a row, respectively.
+    const numMovesNeededToWin = this.props.boardSize < 5 ? 5 : 7;
+
+    return numMovesSoFar >= numMovesNeededToWin;
+  }
+
   /**
    * Reports whose turn it is or the outcome of the game.
    * @returns - A summary of the present game state as text.
    */
   reportGameStatus() {
-    const winner = this.calculateWinner();
 
-    let status;
+    let status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
+
+    if (!this.gameCouldBeWon()) {
+      return status;
+    }
+
+    const winner = this.calculateWinner();
     if (winner) {
       status = `Winner: ${winner}`;
     } else if (this.state.stepNumber === this.calculateBoardArea()) {
       status = 'Draw';
-    } else {
-      status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
     }
 
     return status;
@@ -196,6 +207,7 @@ class Game extends React.Component<GameProps, GameState> {
    */
   calculateWinner() {
     //const numToWin = (this.props.boardSize < 5) ? 3 : 4;
+
     const currentState = this.getCurrentState();
 
     const lines = [
