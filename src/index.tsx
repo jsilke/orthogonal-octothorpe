@@ -1,94 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import { GameProps, SquareProps, BoardProps, GameState, Squares, MoveHistory } from './types';
-
-/**
- * Renders one of the 9 squares on the board.
- * @param props - {
- *   value: The value of the square (X, O, or null).
- *   style: A string containing the CSS class(es) to be added to the square.
- *   onClick: The function to call when the square is clicked.
- * }
- * @returns - A styled button that displays its value.
- */
-const Square = (props: SquareProps) => {
-  return (
-    <button className={`square${props.style}`} onClick={props.onClick}>
-      {props.value}
-    </button>
-  );
-}
-
-/**
- * Renders the entire board row by row.
- */
-class Board extends React.Component<BoardProps> {
-  /**
-   * Renders a single `Square` component.
-   * @param i - The index of the square to render.
-   * @returns - A `Square` component.
-   */
-  renderSquare(i: number) {
-    const assignClass = (i: number) => {
-      let squareClass = '';
-      if (this.props.coordinates[i].row === 0) {
-        squareClass += ' board__top-edge';
-      }
-      if (this.props.coordinates[i].row === this.props.boardSize - 1) {
-        squareClass += ' board__bottom-edge';
-      }
-      if (this.props.coordinates[i].column === 0) {
-        squareClass += ' board__left-edge';
-      }
-      if (this.props.coordinates[i].column === this.props.boardSize - 1) {
-        squareClass += ' board__right-edge';
-      }
-      return squareClass;
-    };
-
-    return (
-      <Square
-        key={i}
-        value={this.props.squares[i]}
-        style={assignClass(i)}
-        onClick={() => this.props.onClick(i)}
-      />
-    );
-  }
-
-  /**
-   * Generates an array of indices for the row using an offset calculated from the `boardSize`
-   * and maps the indices to rendered `Square` components.
-   * @param offset - The board array index of the first square in the row.
-   * @returns - A `Row` componenet (a div of of `Square` components).
-   */
-  renderRow(offset: number) {
-    const squareIndices = [...Array(this.props.boardSize).keys()].map(i => i + offset);
-    const row = squareIndices.map(i => this.renderSquare(i));
-    return (
-      <div key={offset / 3}>
-        {row}
-      </div>
-    );
-  }
-
-  /**
-   * Renders the entire board row by row.
-   */
-  render() {
-    const board = [];
-    for (let i = 0; i < this.props.boardSize; i++) {
-      board.push(this.renderRow(i * this.props.boardSize));
-    }
-
-    return (
-      <div>
-        {board}
-      </div>
-    );
-  }
-}
+import { GameProps, GameState, Squares, MoveHistory } from './types';
+import { Board } from './board';
 
 /**
  * Manages the game's state.
@@ -120,9 +34,9 @@ class Game extends React.Component<GameProps, GameState> {
    * @param i - The index of the square that was clicked. 
    */
   handleClick(i: number) {
-    const squares = this.getCurrentBoardLayoutCopy();
+    const current = this.getCurrentState();
 
-    if (calculateWinner(squares) || squares[i]) {
+    if (this.calculateWinner(current) || current.squares[i]) {
       return;
     }
     this.fillSquareAndUpdateHistory(i);
@@ -210,7 +124,7 @@ class Game extends React.Component<GameProps, GameState> {
    */
   reportGameStatus() {
     const current = this.getCurrentState();
-    const winner = calculateWinner(current.squares);
+    const winner = this.calculateWinner(current);
 
     let status;
     if (winner) {
@@ -282,36 +196,34 @@ class Game extends React.Component<GameProps, GameState> {
       </div>
     );
   }
-}
 
-/**
- * Determines whether the game should end in victory for either player.
- * @param squares - An array containing the current state of the board's values.
- * @returns - The winner of the game, if one exists, otherwise null.
- */
-const calculateWinner = (squares: Squares) => {
-  // TODO: Algorithmically generalize this win strategy instead of hard-coding it to accommodate
-  // arbitrary board sizes.
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+  /**
+   * Determines whether the game should end in victory for either player.
+   * @param squares - An array containing the current state of the board's values.
+   * @returns - The winner of the game, if one exists, otherwise null.
+   */
+  calculateWinner(currentState: MoveHistory) {
+    //const numToWin = (this.props.boardSize < 5) ? 3 : 4;
+    const lines = [
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (currentState.squares[a] && currentState.squares[a] === currentState.squares[b] && currentState.squares[a] === currentState.squares[c]) {
+        return currentState.squares[a];
+      }
     }
+    return null;
   }
-  return null;
-};
 
-// ========================================
+}
 
 const root = ReactDOM.createRoot(document.getElementById("root")!);
 root.render(<Game boardSize={3} />); // Renders an nxn board.
